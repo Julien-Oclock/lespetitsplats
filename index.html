@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Petits Plats</title>
+    <script src="https://kit.fontawesome.com/0e8c5e07d6.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Lato&family=Roboto&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./assets/styles/styles.css">
+    <script src="./index.js" type="module" defer></script>
+</head>
+
+<body>
+    <header class="header">
+        <img src="assets/image/logo.png" alt="Logo des petits plats" class="header__logo">
+        <h1 class="header__title">Les petits plats</h1>
+    </header>
+    <main>
+        <section class="search">
+            <div class="search__recipes">
+                <input type="text" placeholder="Rechercher une recette" class="search__recipes-input">
+                <i class="fas fa-search search__recipes-icon"></i>
+            </div>
+            <div class="search__categories">
+                <div class="search__categories-ingedient">
+                    <input type="text" placeholder="Ingrédients" class="ingredients searchInput" />
+                    <i class="fas fa-chevron-down iconIngredients icon"></i>
+                    <div class="results-ingredients results"></div>
+                </div>
+                <div class="search__categories-devices">
+                    <input type="text" placeholder="Appareils" class="devices searchInput" />
+                    <i class="fas fa-chevron-down iconDevices icon"></i>
+                    <div class="results-devices results"></div>
+                </div>
+                <div class="search__categories-kitchenware">
+                    <input type="text" placeholder="Ustensiles" class="kitchenware searchInput" />
+                    <i class="fas fa-chevron-down iconKitchenware icon"></i>
+                    <div class="results-kitchenware results" id="bloc"></div>
+                </div>
+            </div>
+        </section>
+        <section class="result">
+
+        </section>
+    </main>
+</body>
+
+</html>

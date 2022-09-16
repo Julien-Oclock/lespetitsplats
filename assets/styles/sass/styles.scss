@@ -1,0 +1,207 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "DM Sans", sans-serif;
+}
+
+li {
+    text-decoration: none;
+    list-style: none;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+body {
+    margin: 30px 60px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    &__title {
+        font-size: 36px;
+        font-family: "DM Sans", sans-serif;
+        color: #D04F4F;
+    }
+
+    &__logo {
+        width: 50px;
+    }
+}
+
+.icon {
+    position: absolute;
+    top: 23px;
+    right: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &__recipes {
+        position: relative;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    &__recipes-input {
+        width: 100%;
+        height: 50px;
+        border: none;
+        background-color: #ddd3d399;
+        border-radius: 5px;
+        padding: 0 20px;
+        font-size: 18px;
+        font-family: "DM Sans", sans-serif;
+        outline: none;
+
+        &:focus {
+            border: 1px solid black;
+        }
+
+        &::placeholder {
+            color: #6e6e6e !important;
+        }
+    }
+
+    &__recipes-icon {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+    }
+
+    &__categories {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        margin-bottom: 100px;
+    }
+
+    &__categories-ingedient,
+    &__categories-devices,
+    &__categories-kitchenware {
+        position: relative;
+        color: white;
+        margin-right: 20px;
+    }
+
+    &__categories-ingedient input {
+        height: 60px;
+        font-size: 18px;
+        padding-left: 20px;
+        color: white;
+        position: relative;
+        border: none;
+        border-radius: 5px;
+        background: #3282F7;
+        outline: none;
+
+        &::placeholder {
+            color: white;
+        }
+    }
+
+    &__categories-devices input {
+        height: 60px;
+        font-size: 18px;
+        padding-left: 20px;
+        color: white;
+        position: relative;
+        border: none;
+        border-radius: 5px;
+        background: #68D9A4;
+        outline: none;
+
+        &::placeholder {
+            color: white;
+        }
+    }
+
+    &__categories-kitchenware input {
+        height: 60px;
+        font-size: 18px;
+        padding-left: 20px;
+        color: white;
+        position: relative;
+        border: none;
+        border-radius: 5px;
+        background: #ED6454;
+        outline: none;
+
+        &::placeholder {
+            color: white;
+        }
+    }
+}
+
+.result {
+    width: 90vw;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 0;
+}
+
+.recipes {
+    width: 28%;
+    height: 364px;
+
+    margin-bottom: 100px;
+
+    &__img {
+        background-color: #c7bebe;
+        height: 178px;
+        border-radius: 5px 5px 0 0;
+    }
+
+    &__content {
+        background-color: #e7e7e7;
+        border-radius: 0 0 5px 5px;
+        padding: 18px;
+    }
+
+    &__content-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 20px;
+    }
+
+    &__content-title {
+        font-size: 18px;
+        font-family: "DM Sans", sans-serif;
+    }
+
+    &__content-text {
+        display: flex;
+        font-size: 12px;
+        padding: 20px 0;
+        width: 100%;
+    }
+
+    &__content-ingredients {
+        width: 50%;
+        font-family: "Lato";
+    }
+
+    &__content-instructions {
+        width: 40%;
+        font-family: "Roboto";
+        font-weight: 400;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: wrap;
+        max-height: 100px;
+    }
+}

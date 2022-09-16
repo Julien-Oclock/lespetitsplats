@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "sass": "^1.54.9"
+  },
+  "scripts": {
+    "sass": "sass --watch ./assets/styles/sass/styles.scss:./assets/styles/styles.css --style compressed"
+  },
+  "devDependencies": {
+    "eslint": "^8.23.0"
+  }
+}
