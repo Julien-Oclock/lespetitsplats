@@ -68,7 +68,7 @@ const app = {
         });
     },
 
-    getIngredients: async function (query = null) {
+    getIngredients: async function (query) {
         let ingredients = [];
         if (query === null) {
             app.recipes.forEach(recipe => {
@@ -153,8 +153,8 @@ const app = {
             ingredientItem.classList.add("results-ingredients-item");
             ingredientItem.innerHTML = ingredient;
             ingredientList.appendChild(ingredientItem);
-            ingredientItem.addEventListener('click', () => {
-                console.log(ingredient)
+            ingredientItem.addEventListener('click', (e) => {
+                app.searchIngredients(e, ingredient)
             })
         })
     },
@@ -172,8 +172,8 @@ const app = {
             deviceItem.classList.add("results-devices-item");
             deviceItem.innerHTML = device;
             devicesList.appendChild(deviceItem);
-            deviceItem.addEventListener('click', () => {
-                console.log(device)
+            deviceItem.addEventListener('click', (e) => {
+                app.searchDevices(e, device)
             })
         })
     },
@@ -210,34 +210,74 @@ const app = {
         })
     },
 
-    searchIngredients: async function (e) {
+    searchIngredients: async function (e, tag = null) {
         app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
-        const filteredRecipes = searchIngredients(app.recipes, query);
-        //console.log(filteredRecipes)
-        recipesContainer.innerHTML = "";
 
-        filteredRecipes.forEach(recipe => {
-            const recipeFactoryInstance = recipeFactory(recipe);
-            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-        })
-        app.displayIngredients(query)
+        if (tag !== null) {
+            app.displayIngredients(tag)
+            const filteredRecipes = searchRecipes(app.recipes, tag);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            const htmlTag = document.createElement('div');
+            htmlTag.className = 'search__tag-item blue';
+            htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
+            app.htmlTagContainer.appendChild(htmlTag);
+            const closeTag = htmlTag.querySelector('.close');
+            closeTag.addEventListener('click', () => {
+                htmlTag.remove();
+                app.displayUstensils()
+                app.displayRecipes()
+            })
+        } else {
+            const filteredRecipes = searchIngredients(app.recipes, query);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            app.displayIngredients(query)
+        }
+
     },
 
-    searchDevices: async function (e) {
+    searchDevices: async function (e, tag = null) {
         app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
-        const filteredRecipes = searchDevices(app.recipes, query);
-        //console.log(filteredRecipes)
-        recipesContainer.innerHTML = "";
 
-        filteredRecipes.forEach(recipe => {
-            const recipeFactoryInstance = recipeFactory(recipe);
-            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-        })
-        app.displayDevices(query)
+        if (tag !== null) {
+            app.displayDevices(tag);
+            const filteredRecipes = searchDevices(app.recipes, tag);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            const htmlTag = document.createElement('div');
+            htmlTag.className = 'search__tag-item green';
+            htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
+            app.htmlTagContainer.appendChild(htmlTag);
+            const closeTag = htmlTag.querySelector('.close');
+            closeTag.addEventListener('click', () => {
+                htmlTag.remove();
+                app.displayUstensils()
+                app.displayRecipes()
+            })
+        } else {
+            const filteredRecipes = searchDevices(app.recipes, query);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            app.displayDevices(query)
+        }
+
     },
 
     searchUstensils: async function (e, tag = null) {
