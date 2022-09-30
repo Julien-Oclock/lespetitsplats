@@ -1,6 +1,5 @@
 export default function recipeTemplate(data) {
     const { id, name, servings, ingredients, time, description, appliance, ustensils } = data;
-    console.log(data)
     const ingredientArray = [...ingredients]
     return (
         `
