@@ -1,4 +1,5 @@
 import recipeFactory from "./scripts/factory/recipeFactory.js";
+import searchRecipes from "./scripts/algo/search.js";
 
 const app = {
     init: async function () {
@@ -10,12 +11,14 @@ const app = {
             app.displayDevices()
             app.displayUstensils()
         }, 50)
+        app.globalSearchInput.addEventListener('input', app.globalSearch);
     },
 
     recipes: [],
     ingredients: [],
     devices: [],
     ustensils: [],
+    globalSearchInput: document.querySelector(".search__recipes-input"),
 
     toggleCLass: async function () {
         const searchInput = document.querySelectorAll(".searchInput");
@@ -51,7 +54,7 @@ const app = {
         });
     },
 
-    getIgredients: async function () {
+    getIngredients: async function () {
         let ingredients = [];
         app.recipes.forEach(recipe => {
             recipe.ingredients.forEach(ingredient => {
@@ -83,7 +86,7 @@ const app = {
     },
 
     displayIngredients: async function () {
-        app.getIgredients()
+        app.getIngredients()
         const ingredientsContainer = document.querySelector(".results-ingredients");
         const ingredientList = document.createElement("ul");
         ingredientList.classList.add("results-ingredients-list");
@@ -94,6 +97,9 @@ const app = {
             ingredientItem.classList.add("results-ingredients-item");
             ingredientItem.innerHTML = ingredient;
             ingredientList.appendChild(ingredientItem);
+            ingredientItem.addEventListener('click', () => {
+                console.log(ingredient)
+            })
         })
     },
 
@@ -109,6 +115,9 @@ const app = {
             deviceItem.classList.add("results-devices-item");
             deviceItem.innerHTML = device;
             devicesList.appendChild(deviceItem);
+            deviceItem.addEventListener('click', () => {
+                console.log(device)
+            })
         })
     },
 
@@ -124,6 +133,22 @@ const app = {
             ustensilItem.classList.add("results-kitchenware-item");
             ustensilItem.innerHTML = ustensil;
             ustensilsList.appendChild(ustensilItem);
+            ustensilItem.addEventListener('click', () => {
+                console.log(ustensil)
+            })
+        })
+    },
+
+    globalSearch: async function (e) {
+        app.displayRecipes(app.recipes)
+        console.log(e.target.value)
+        const recipesContainer = document.querySelector(".result");
+        const query = e.target.value;
+        const filteredRecipes = searchRecipes(app.recipes, query);
+        recipesContainer.innerHTML = "";
+        filteredRecipes.forEach(recipe => {
+            const recipeFactoryInstance = recipeFactory(recipe);
+            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
         })
     }
 
