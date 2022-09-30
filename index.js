@@ -30,6 +30,8 @@ const app = {
     ingredientsSearchInput: document.querySelector(".ingredients"),
     devicesSearchInput: document.querySelector(".devices"),
     ustensilsSearchInput: document.querySelector(".kitchenware"),
+    htmlTagContainer: document.querySelector('.search__tag'),
+
 
 
     toggleCLass: async function () {
@@ -189,8 +191,8 @@ const app = {
             ustensilItem.classList.add("results-kitchenware-item");
             ustensilItem.innerHTML = ustensil;
             ustensilsList.appendChild(ustensilItem);
-            ustensilItem.addEventListener('click', () => {
-                console.log(ustensil)
+            ustensilItem.addEventListener('click', (e) => {
+                app.searchUstensils(e, ustensil)
             })
         })
     },
@@ -238,19 +240,39 @@ const app = {
         app.displayDevices(query)
     },
 
-    searchUstensils: async function (e) {
+    searchUstensils: async function (e, tag = null) {
         app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
-        const filteredRecipes = searchUstensils(app.recipes, query);
-        //console.log(filteredRecipes)
-        recipesContainer.innerHTML = "";
+        if (tag !== null) {
+            app.displayUstensils(tag)
+            const filteredRecipes = searchUstensils(app.recipes, tag);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            const htmlTag = document.createElement('div');
+            htmlTag.className = 'search__tag-item red';
+            htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
+            app.htmlTagContainer.appendChild(htmlTag);
+            const closeTag = htmlTag.querySelector('.close');
+            closeTag.addEventListener('click', () => {
+                htmlTag.remove();
+                app.displayUstensils()
+                app.displayRecipes()
+            })
 
-        filteredRecipes.forEach(recipe => {
-            const recipeFactoryInstance = recipeFactory(recipe);
-            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-        })
-        app.displayUstensils(query)
+        } else {
+            const filteredRecipes = searchUstensils(app.recipes, query);
+            recipesContainer.innerHTML = "";
+            filteredRecipes.forEach(recipe => {
+                const recipeFactoryInstance = recipeFactory(recipe);
+                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+            })
+            app.displayUstensils(query)
+        }
+
     }
 
 
