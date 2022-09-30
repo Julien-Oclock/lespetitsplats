@@ -1,5 +1,10 @@
 import recipeFactory from "./scripts/factory/recipeFactory.js";
-import searchRecipes from "./scripts/algo/search.js";
+import {
+    searchRecipes,
+    searchIngredients,
+    searchDevices,
+    searchUstensils
+} from "./scripts/algo/search.js";
 
 const app = {
     init: async function () {
@@ -12,6 +17,9 @@ const app = {
             app.displayUstensils()
         }, 50)
         app.globalSearchInput.addEventListener('input', app.globalSearch);
+        app.ingredientsSearchInput.addEventListener('input', app.searchIngredients);
+        app.devicesSearchInput.addEventListener('input', app.searchDevices);
+        app.ustensilsSearchInput.addEventListener('input', app.searchUstensils);
     },
 
     recipes: [],
@@ -19,6 +27,10 @@ const app = {
     devices: [],
     ustensils: [],
     globalSearchInput: document.querySelector(".search__recipes-input"),
+    ingredientsSearchInput: document.querySelector(".ingredients"),
+    devicesSearchInput: document.querySelector(".devices"),
+    ustensilsSearchInput: document.querySelector(".kitchenware"),
+
 
     toggleCLass: async function () {
         const searchInput = document.querySelectorAll(".searchInput");
@@ -54,40 +66,82 @@ const app = {
         });
     },
 
-    getIngredients: async function () {
+    getIngredients: async function (query = null) {
         let ingredients = [];
-        app.recipes.forEach(recipe => {
-            recipe.ingredients.forEach(ingredient => {
-                ingredients.push(ingredient.ingredient)
-            })
-        });
-        app.ingredients = new Set(ingredients)
-        console.log(app.ingredients)
+        if (query === null) {
+            app.recipes.forEach(recipe => {
+                recipe.ingredients.forEach(ingredient => {
+                    ingredients.push(ingredient.ingredient)
+                })
+            });
+            app.ingredients = new Set(ingredients)
+            console.log({ 'no query': app.ingredients })
+
+        } else {
+            app.recipes.forEach(recipe => {
+                recipe.ingredients.forEach(ingredient => {
+                    if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
+                        ingredients.push(ingredient.ingredient)
+                    }
+                })
+            });
+            app.ingredients = new Set(ingredients)
+            console.log({ 'query': app.ingredients })
+        }
+
     },
 
-    getDevices: async function () {
+    getDevices: async function (query) {
         let devices = [];
-        app.recipes.forEach(recipe => {
-            devices.push(recipe.appliance)
-        });
-        app.devices = new Set(devices)
-        console.log(app.devices)
+        if (query === null) {
+            app.recipes.forEach(recipe => {
+                devices.push(recipe.appliance)
+            });
+            app.devices = new Set(devices)
+            console.log({ 'no query': app.devices })
+
+        } else {
+            app.recipes.forEach(recipe => {
+                if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
+                    devices.push(recipe.appliance)
+                }
+            });
+            app.devices = new Set(devices)
+            console.log({ 'query': app.devices })
+        }
+
     },
 
-    getUstensils: async function () {
+    getUstensils: async function (query) {
         let ustensils = [];
-        app.recipes.forEach(recipe => {
-            recipe.ustensils.forEach(ustensil => {
-                ustensils.push(ustensil)
-            })
-        });
-        app.ustensils = new Set(ustensils)
-        console.log(app.ustensils)
+        if (query === null) {
+            app.recipes.forEach(recipe => {
+                recipe.ustensils.forEach(ustensil => {
+                    ustensils.push(ustensil)
+                })
+            });
+            app.ustensils = new Set(ustensils)
+            console.log({ 'no query': app.ustensils })
+
+        } else {
+            app.recipes.forEach(recipe => {
+                recipe.ustensils.forEach(ustensil => {
+                    console.log(ustensil)
+                    if (ustensil.toLowerCase().includes(query.toLowerCase())) {
+                        ustensils.push(ustensil)
+                    }
+                })
+            });
+            app.ustensils = new Set(ustensils)
+            console.log({ 'query': app.ustensils })
+        }
+
     },
 
-    displayIngredients: async function () {
-        app.getIngredients()
+    displayIngredients: async function (query = null) {
+        app.getIngredients(query);
         const ingredientsContainer = document.querySelector(".results-ingredients");
+        ingredientsContainer.innerHTML = "";
         const ingredientList = document.createElement("ul");
         ingredientList.classList.add("results-ingredients-list");
         ingredientList.classList.add("blue");
@@ -103,9 +157,10 @@ const app = {
         })
     },
 
-    displayDevices: async function () {
-        app.getDevices()
+    displayDevices: async function (query = null) {
+        app.getDevices(query)
         const devicesContainer = document.querySelector(".results-devices");
+        devicesContainer.innerHTML = "";
         const devicesList = document.createElement("ul");
         devicesList.classList.add("results-devices-list");
         devicesList.classList.add("green");
@@ -121,9 +176,10 @@ const app = {
         })
     },
 
-    displayUstensils: async function () {
-        app.getUstensils()
+    displayUstensils: async function (query = null) {
+        app.getUstensils(query)
         const ustensilsContainer = document.querySelector(".results-kitchenware");
+        ustensilsContainer.innerHTML = "";
         const ustensilsList = document.createElement("ul");
         ustensilsList.classList.add("results-kitchenware-list");
         ustensilsList.classList.add("red");
@@ -150,6 +206,51 @@ const app = {
             const recipeFactoryInstance = recipeFactory(recipe);
             recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
         })
+    },
+
+    searchIngredients: async function (e) {
+        app.displayRecipes(app.recipes)
+        const query = e.target.value;
+        const recipesContainer = document.querySelector(".result");
+        const filteredRecipes = searchIngredients(app.recipes, query);
+        //console.log(filteredRecipes)
+        recipesContainer.innerHTML = "";
+
+        filteredRecipes.forEach(recipe => {
+            const recipeFactoryInstance = recipeFactory(recipe);
+            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+        })
+        app.displayIngredients(query)
+    },
+
+    searchDevices: async function (e) {
+        app.displayRecipes(app.recipes)
+        const query = e.target.value;
+        const recipesContainer = document.querySelector(".result");
+        const filteredRecipes = searchDevices(app.recipes, query);
+        //console.log(filteredRecipes)
+        recipesContainer.innerHTML = "";
+
+        filteredRecipes.forEach(recipe => {
+            const recipeFactoryInstance = recipeFactory(recipe);
+            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+        })
+        app.displayDevices(query)
+    },
+
+    searchUstensils: async function (e) {
+        app.displayRecipes(app.recipes)
+        const query = e.target.value;
+        const recipesContainer = document.querySelector(".result");
+        const filteredRecipes = searchUstensils(app.recipes, query);
+        //console.log(filteredRecipes)
+        recipesContainer.innerHTML = "";
+
+        filteredRecipes.forEach(recipe => {
+            const recipeFactoryInstance = recipeFactory(recipe);
+            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
+        })
+        app.displayUstensils(query)
     }
 
 
