@@ -41,11 +41,15 @@ body {
     cursor: pointer;
 }
 
+
+
 .search {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    height: fit-content;
+    margin-bottom: 30px;
 
     &__recipes {
         position: relative;
@@ -93,6 +97,7 @@ body {
         position: relative;
         color: white;
         margin-right: 20px;
+        width: fit-content
     }
 
     &__categories-ingedient input {
@@ -105,6 +110,7 @@ body {
         border-radius: 5px;
         background: #3282F7;
         outline: none;
+        width: 100%;
 
         &::placeholder {
             color: white;
@@ -112,6 +118,7 @@ body {
     }
 
     &__categories-devices input {
+        width: 100%;
         height: 60px;
         font-size: 18px;
         padding-left: 20px;
@@ -128,6 +135,7 @@ body {
     }
 
     &__categories-kitchenware input {
+        width: 100%;
         height: 60px;
         font-size: 18px;
         padding-left: 20px;
@@ -140,6 +148,52 @@ body {
 
         &::placeholder {
             color: white;
+        }
+    }
+}
+
+.blue {
+    background: #3282F7;
+}
+
+.green {
+    background: #68D9A4;
+}
+
+.red {
+    background: #ED6454;
+}
+
+.hidden {
+    display: none;
+}
+
+.results-ingredients,
+.results-devices,
+.results-kitchenware {
+
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+        width: fit-content;
+        min-width: 250px;
+        border-radius: 0 0 5px 5px;
+        margin-top: -5px;
+        padding-bottom: 10px;
+
+
+        li {
+            margin-left: 18px;
+            flex: 30%;
+            width: 30%;
+            padding-top: 10px;
+            display: block;
+            color: white;
+            font-size: 16px;
+            justify-content: flex-start;
+            text-overflow: hidden;
         }
     }
 }
