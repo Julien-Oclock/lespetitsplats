@@ -10,11 +10,8 @@ const app = {
     init: async function () {
         app.recipes = await app.getRecipes();
         setTimeout(() => {
-            app.displayRecipes();
+            app.displayRecipes(app.recipes);
             app.toggleCLass();
-            app.displayIngredients()
-            app.displayDevices()
-            app.displayUstensils()
         }, 50)
         app.globalSearchInput.addEventListener('input', app.globalSearch);
         app.ingredientsSearchInput.addEventListener('input', app.searchIngredients);
@@ -53,34 +50,36 @@ const app = {
             })
             .then(data => {
                 app.recipes = data.recipes
-                console.log(app.recipes)
             })
             .then(() => {
                 app.displayRecipes(app.recipes);
             })
     },
 
-    displayRecipes: async function () {
+    displayRecipes: async function (recipes) {
         const recipesContainer = document.querySelector(".result");
-        app.recipes.forEach(recipe => {
+        recipes.forEach(recipe => {
             const recipeFactoryInstance = recipeFactory(recipe);
             recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
         });
+
+        app.displayIngredients(recipes)
+        app.displayDevices(recipes)
+        app.displayUstensils(recipes)
     },
 
-    getIngredients: async function (query) {
+    getIngredients: async function (recipes, query) {
         let ingredients = [];
         if (query === null) {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 recipe.ingredients.forEach(ingredient => {
                     ingredients.push(ingredient.ingredient)
                 })
             });
             app.ingredients = new Set(ingredients)
-            console.log({ 'no query': app.ingredients })
 
         } else {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 recipe.ingredients.forEach(ingredient => {
                     if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
                         ingredients.push(ingredient.ingredient)
@@ -88,60 +87,54 @@ const app = {
                 })
             });
             app.ingredients = new Set(ingredients)
-            console.log({ 'query': app.ingredients })
         }
 
     },
 
-    getDevices: async function (query) {
+    getDevices: async function (recipes, query) {
         let devices = [];
         if (query === null) {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 devices.push(recipe.appliance)
             });
             app.devices = new Set(devices)
-            console.log({ 'no query': app.devices })
 
         } else {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
                     devices.push(recipe.appliance)
                 }
             });
             app.devices = new Set(devices)
-            console.log({ 'query': app.devices })
         }
 
     },
 
-    getUstensils: async function (query) {
+    getUstensils: async function (recipes, query) {
         let ustensils = [];
         if (query === null) {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 recipe.ustensils.forEach(ustensil => {
                     ustensils.push(ustensil)
                 })
             });
             app.ustensils = new Set(ustensils)
-            console.log({ 'no query': app.ustensils })
 
         } else {
-            app.recipes.forEach(recipe => {
+            recipes.forEach(recipe => {
                 recipe.ustensils.forEach(ustensil => {
-                    console.log(ustensil)
                     if (ustensil.toLowerCase().includes(query.toLowerCase())) {
                         ustensils.push(ustensil)
                     }
                 })
             });
             app.ustensils = new Set(ustensils)
-            console.log({ 'query': app.ustensils })
         }
 
     },
 
-    displayIngredients: async function (query = null) {
-        app.getIngredients(query);
+    displayIngredients: async function (recipes, query = null) {
+        app.getIngredients(recipes, query);
         const ingredientsContainer = document.querySelector(".results-ingredients");
         ingredientsContainer.innerHTML = "";
         const ingredientList = document.createElement("ul");
@@ -159,8 +152,8 @@ const app = {
         })
     },
 
-    displayDevices: async function (query = null) {
-        app.getDevices(query)
+    displayDevices: async function (recipes, query = null) {
+        app.getDevices(recipes, query)
         const devicesContainer = document.querySelector(".results-devices");
         devicesContainer.innerHTML = "";
         const devicesList = document.createElement("ul");
@@ -178,8 +171,8 @@ const app = {
         })
     },
 
-    displayUstensils: async function (query = null) {
-        app.getUstensils(query)
+    displayUstensils: async function (recipes, query = null) {
+        app.getUstensils(recipes, query)
         const ustensilsContainer = document.querySelector(".results-kitchenware");
         ustensilsContainer.innerHTML = "";
         const ustensilsList = document.createElement("ul");
@@ -199,15 +192,11 @@ const app = {
 
     globalSearch: async function (e) {
         app.displayRecipes(app.recipes)
-        console.log(e.target.value)
         const recipesContainer = document.querySelector(".result");
         const query = e.target.value;
         const filteredRecipes = searchRecipes(app.recipes, query);
         recipesContainer.innerHTML = "";
-        filteredRecipes.forEach(recipe => {
-            const recipeFactoryInstance = recipeFactory(recipe);
-            recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-        })
+        app.displayRecipes(filteredRecipes)
     },
 
     searchIngredients: async function (e, tag = null) {
@@ -216,13 +205,12 @@ const app = {
         const recipesContainer = document.querySelector(".result");
 
         if (tag !== null) {
-            app.displayIngredients(tag)
+            console.log(tag)
             const filteredRecipes = searchRecipes(app.recipes, tag);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
+            app.displayIngredients(filteredRecipes, tag)
+
             const htmlTag = document.createElement('div');
             htmlTag.className = 'search__tag-item blue';
             htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
@@ -230,16 +218,12 @@ const app = {
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
-                app.displayUstensils()
-                app.displayRecipes()
+                app.displayRecipes(app.recipes)
             })
         } else {
             const filteredRecipes = searchIngredients(app.recipes, query);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
             app.displayIngredients(query)
         }
 
@@ -254,10 +238,8 @@ const app = {
             app.displayDevices(tag);
             const filteredRecipes = searchDevices(app.recipes, tag);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
+            app.displayDevices(filteredRecipes, tag)
             const htmlTag = document.createElement('div');
             htmlTag.className = 'search__tag-item green';
             htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
@@ -265,16 +247,12 @@ const app = {
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
-                app.displayUstensils()
-                app.displayRecipes()
+                app.displayRecipes(app.recipes)
             })
         } else {
             const filteredRecipes = searchDevices(app.recipes, query);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
             app.displayDevices(query)
         }
 
@@ -285,13 +263,10 @@ const app = {
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
         if (tag !== null) {
-            app.displayUstensils(tag)
             const filteredRecipes = searchUstensils(app.recipes, tag);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
+            app.displayUstensils(filteredRecipes, tag)
             const htmlTag = document.createElement('div');
             htmlTag.className = 'search__tag-item red';
             htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
@@ -300,16 +275,13 @@ const app = {
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
                 app.displayUstensils()
-                app.displayRecipes()
+                app.displayRecipes(app.recipes)
             })
 
         } else {
             const filteredRecipes = searchUstensils(app.recipes, query);
             recipesContainer.innerHTML = "";
-            filteredRecipes.forEach(recipe => {
-                const recipeFactoryInstance = recipeFactory(recipe);
-                recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
-            })
+            app.displayRecipes(filteredRecipes)
             app.displayUstensils(query)
         }
 
