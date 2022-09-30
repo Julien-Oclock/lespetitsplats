@@ -79,14 +79,16 @@ const app = {
             app.ingredients = new Set(ingredients)
 
         } else {
-            recipes.forEach(recipe => {
-                recipe.ingredients.forEach(ingredient => {
-                    if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
-                        ingredients.push(ingredient.ingredient)
-                    }
-                })
-            });
-            app.ingredients = new Set(ingredients)
+            if (query.length > 2) {
+                recipes.forEach(recipe => {
+                    recipe.ingredients.forEach(ingredient => {
+                        if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
+                            ingredients.push(ingredient.ingredient)
+                        }
+                    })
+                });
+                app.ingredients = new Set(ingredients)
+            }
         }
 
     },
@@ -100,14 +102,15 @@ const app = {
             app.devices = new Set(devices)
 
         } else {
-            recipes.forEach(recipe => {
-                if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
-                    devices.push(recipe.appliance)
-                }
-            });
-            app.devices = new Set(devices)
+            if (query.length > 2) {
+                recipes.forEach(recipe => {
+                    if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
+                        devices.push(recipe.appliance)
+                    }
+                });
+                app.devices = new Set(devices)
+            }
         }
-
     },
 
     getUstensils: async function (recipes, query) {
@@ -121,14 +124,17 @@ const app = {
             app.ustensils = new Set(ustensils)
 
         } else {
-            recipes.forEach(recipe => {
-                recipe.ustensils.forEach(ustensil => {
-                    if (ustensil.toLowerCase().includes(query.toLowerCase())) {
-                        ustensils.push(ustensil)
-                    }
-                })
-            });
-            app.ustensils = new Set(ustensils)
+            if (query.length > 2) {
+                recipes.forEach(recipe => {
+                    recipe.ustensils.forEach(ustensil => {
+                        if (ustensil.toLowerCase().includes(query.toLowerCase())) {
+                            console.log(ustensil)
+                            ustensils.push(ustensil)
+                        }
+                    })
+                });
+                app.ustensils = new Set(ustensils)
+            }
         }
 
     },
@@ -200,7 +206,6 @@ const app = {
     },
 
     searchIngredients: async function (e, tag = null) {
-        app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
 
@@ -221,16 +226,15 @@ const app = {
                 app.displayRecipes(app.recipes)
             })
         } else {
-            const filteredRecipes = searchIngredients(app.recipes, query);
+            const filteredRecipes = searchIngredients(app.recipes, query.toLowerCase());
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
-            app.displayIngredients(query)
+            app.displayIngredients(filteredRecipes, query.toLowerCase())
         }
 
     },
 
     searchDevices: async function (e, tag = null) {
-        app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
 
@@ -253,13 +257,12 @@ const app = {
             const filteredRecipes = searchDevices(app.recipes, query);
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
-            app.displayDevices(query)
+            app.displayDevices(filteredRecipes, query)
         }
 
     },
 
     searchUstensils: async function (e, tag = null) {
-        app.displayRecipes(app.recipes)
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
         if (tag !== null) {
@@ -282,7 +285,7 @@ const app = {
             const filteredRecipes = searchUstensils(app.recipes, query);
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
-            app.displayUstensils(query)
+            app.displayUstensils(filteredRecipes, query)
         }
 
     }
