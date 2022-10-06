@@ -20,6 +20,7 @@ const app = {
     },
 
     recipes: [],
+    filteredRecipes : [],
     ingredients: [],
     devices: [],
     ustensils: [],
@@ -62,7 +63,7 @@ const app = {
             const recipeFactoryInstance = recipeFactory(recipe);
             recipesContainer.appendChild(recipeFactoryInstance.getUserCardDOM());
         });
-
+        app.filteredRecipes = recipes;
         app.displayIngredients(recipes)
         app.displayDevices(recipes)
         app.displayUstensils(recipes)
@@ -197,21 +198,28 @@ const app = {
     },
 
     globalSearch: async function (e) {
-        app.displayRecipes(app.recipes)
         const recipesContainer = document.querySelector(".result");
         const query = e.target.value;
         const filteredRecipes = searchRecipes(app.recipes, query);
         recipesContainer.innerHTML = "";
         app.displayRecipes(filteredRecipes)
+        app.filteredRecipes = [...filteredRecipes];
     },
 
     searchIngredients: async function (e, tag = null) {
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
+        let recipes = [...app.recipes];
+
+        if (recipes.length !== app.filteredRecipes.length) {
+            recipes = [...app.filteredRecipes];
+        } else {
+            recipes = [...app.recipes];
+        }
 
         if (tag !== null) {
-            console.log(tag)
-            const filteredRecipes = searchRecipes(app.recipes, tag);
+            const filteredRecipes = searchRecipes(recipes, tag);
+            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayIngredients(filteredRecipes, tag)
@@ -223,11 +231,12 @@ const app = {
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
-                app.displayRecipes(app.recipes)
+                app.displayRecipes(recipes)
             })
         } else {
             const filteredRecipes = searchIngredients(app.recipes, query.toLowerCase());
             recipesContainer.innerHTML = "";
+            app.filteredRecipes = [...filteredRecipes];
             app.displayRecipes(filteredRecipes)
             app.displayIngredients(filteredRecipes, query.toLowerCase())
         }
@@ -238,9 +247,18 @@ const app = {
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
 
+        let recipes = [...app.recipes];
+
+        if (recipes.length !== app.filteredRecipes.length) {
+            recipes = [...app.filteredRecipes];
+        } else {
+            recipes = [...app.recipes];
+        }
+
         if (tag !== null) {
             app.displayDevices(tag);
-            const filteredRecipes = searchDevices(app.recipes, tag);
+            const filteredRecipes = searchDevices(recipes, tag);
+            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayDevices(filteredRecipes, tag)
@@ -251,10 +269,11 @@ const app = {
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
-                app.displayRecipes(app.recipes)
+                app.displayRecipes(recipes)
             })
         } else {
-            const filteredRecipes = searchDevices(app.recipes, query);
+            const filteredRecipes = searchDevices(recipes, query);
+            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayDevices(filteredRecipes, query)
@@ -265,8 +284,17 @@ const app = {
     searchUstensils: async function (e, tag = null) {
         const query = e.target.value;
         const recipesContainer = document.querySelector(".result");
+
+        let recipes = [...app.recipes];
+
+        if (recipes.length !== app.filteredRecipes.length) {
+            recipes = [...app.filteredRecipes];
+        } else {
+            recipes = [...app.recipes];
+        }
         if (tag !== null) {
-            const filteredRecipes = searchUstensils(app.recipes, tag);
+            const filteredRecipes = searchUstensils(recipes, tag);
+            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayUstensils(filteredRecipes, tag)
@@ -278,11 +306,12 @@ const app = {
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
                 app.displayUstensils()
-                app.displayRecipes(app.recipes)
+                app.displayRecipes(recipes)
             })
 
         } else {
-            const filteredRecipes = searchUstensils(app.recipes, query);
+            const filteredRecipes = searchUstensils(recipes, query);
+            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayUstensils(filteredRecipes, query)
