@@ -15,6 +15,8 @@ const app = {
         }, 50)
         app.globalSearchInput.addEventListener('input', app.globalSearch);
         app.ingredientsSearchInput.addEventListener('input', app.ingredientsSearch);
+        app.devicesSearchInput.addEventListener('input', app.deviceSearch);
+        app.ustensilsSearchInput.addEventListener('input', app.ustensilsSearch);
     },
 
     recipes: [],
@@ -75,17 +77,17 @@ const app = {
         app.ingredients = new Set(ingredients)
     },
 
-    getDevices: async function () {
+    getDevices: async function (recipes) {
         let devices = [];
-        app.recipes.forEach(recipe => {
+        recipes.forEach(recipe => {
             devices.push(recipe.appliance)
         });
         app.devices = new Set(devices)
     },
 
-    getUstensils: async function () {
+    getUstensils: async function (recipes) {
         let ustensils = [];
-        app.recipes.forEach(recipe => {
+        recipes.forEach(recipe => {
             recipe.ustensils.forEach(ustensil => {
                 ustensils.push(ustensil)
             })
@@ -101,7 +103,6 @@ const app = {
         ingredientList.classList.add("results-ingredients-list");
         ingredientList.classList.add("blue");
         ingredientsContainer.appendChild(ingredientList);
-        console.log({ingredients : app.ingredients})
         for (let ingredient of app.ingredients) {
             
             const ingredientItem = document.createElement("li");
@@ -115,8 +116,8 @@ const app = {
         }
     },
 
-    displayDevices: async function () {
-        app.getDevices()
+    displayDevices: async function (recipes) {
+        app.getDevices(recipes)
         const devicesContainer = document.querySelector(".results-devices");
         devicesContainer.innerHTML = "";
         const devicesList = document.createElement("ul");
@@ -131,8 +132,8 @@ const app = {
         }
     },
 
-    displayUstensils: async function () {
-        app.getUstensils()
+    displayUstensils: async function (recipes) {
+        app.getUstensils(recipes)
         const ustensilsContainer = document.querySelector(".results-kitchenware");
         ustensilsContainer.innerHTML = "";
         const ustensilsList = document.createElement("ul");
@@ -157,7 +158,6 @@ const app = {
     },
 
     ingredientsSearch: async function (e, tag = null) {
-        
         const query = e.target.value.toLowerCase();
         const recipesContainer = document.querySelector(".result");
         let recipes = [...app.recipes];
@@ -184,15 +184,102 @@ const app = {
                 console.log('close')
             })
         } else {
-            console.log("query is used")
-            const filteredRecipes = searchIngredients(recipes, query);
+            if (query.length > 2){
+                const filteredRecipes = searchIngredients(recipes, query);
+                app.filteredRecipes = [...filteredRecipes];
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(filteredRecipes)
+                app.displayIngredients(filteredRecipes, query)
+            }
+            else {
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(app.recipes)
+                app.displayIngredients(app.recipes)
+            }
+
+        }
+    },
+
+    deviceSearch : async function (e, tag = null) {
+        const query = e.target.value.toLowerCase();
+        const recipesContainer = document.querySelector(".result");
+        let recipes = [...app.recipes];
+        if (recipes.length !== app.filteredRecipes.length) {
+            recipes = [...app.filteredRecipes];
+        } else {
+            recipes = [...app.recipes];
+        }
+        if (tag !== null) {
+            const filteredRecipes = searchDevices(recipes, tag);
             app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
-            console.log({filteredRecipes : filteredRecipes})
             app.displayRecipes(filteredRecipes)
-            app.displayIngredients(filteredRecipes, query)
+            app.displayDevices(filteredRecipes, tag)
+
+            const htmlTag = document.createElement('div');
+            htmlTag.className = 'search__tag-item green';
+            htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
+            app.htmlTagContainer.appendChild(htmlTag);
+            const closeTag = htmlTag.querySelector('.close');
+            closeTag.addEventListener('click', () => {
+                console.log('close')
+            })
+        } else {
+            if (query.length > 2){
+                const filteredRecipes = searchDevices(recipes, query);
+                app.filteredRecipes = [...filteredRecipes];
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(filteredRecipes)
+                app.displayDevices(filteredRecipes, query)
+            }
+            else {
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(app.recipes)
+                app.displayDevices(app.recipes)
+            }
+        }
+    },
+
+    ustensilsSearch : async function (e, tag = null) {
+        const query = e.target.value.toLowerCase();
+        const recipesContainer = document.querySelector(".result");
+        let recipes = [...app.recipes];
+        if (recipes.length !== app.filteredRecipes.length) {
+            recipes = [...app.filteredRecipes];
+        } else {
+            recipes = [...app.recipes];
+        }
+        if (tag !== null) {
+            const filteredRecipes = searchUstensils(recipes, tag);
+            app.filteredRecipes = [...filteredRecipes];
+            recipesContainer.innerHTML = "";
+            app.displayRecipes(filteredRecipes)
+            app.displayUstensils(filteredRecipes, tag)
+
+            const htmlTag = document.createElement('div');
+            htmlTag.className = 'search__tag-item red';
+            htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
+            app.htmlTagContainer.appendChild(htmlTag);
+            const closeTag = htmlTag.querySelector('.close');
+            closeTag.addEventListener('click', () => {
+                console.log('close')
+            })
+        } else {
+            if (query.length > 2){
+                const filteredRecipes = searchUstensils(recipes, query);
+                app.filteredRecipes = [...filteredRecipes];
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(filteredRecipes)
+                app.displayUstensils(filteredRecipes, query)
+            }
+            else {
+                recipesContainer.innerHTML = "";
+                app.displayRecipes(app.recipes)
+                app.displayUstensils(app.recipes)
+            }
         }
     }
+
 
 
 }

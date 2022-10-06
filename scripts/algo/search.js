@@ -1,6 +1,5 @@
 const searchRecipes = (recipes, query = null) => {
     let result = [];
-    console.log(query)
     if (query.length > 2) {
         for (let i = 0; i < recipes.length; i++) {
             let recipe = recipes[i];
@@ -18,7 +17,6 @@ const searchRecipes = (recipes, query = null) => {
                 }
             }
         }
-        console.log({result : result})
         return result;
     } else {
         return recipes;
@@ -29,15 +27,11 @@ const searchRecipes = (recipes, query = null) => {
 
 // search ingredients
 const searchIngredients = (recipes, query = null) => {
-    console.log({ 'start': recipes })
     if (query === null) {
         return recipes
     }
-    console.log(query)
     if (query.length > 2) {
-        console.log('query is used in search function')
         const filterRecipes = []
-        console.log('result')
         for (let recipe of recipes){
             for (let ingredient of recipe.ingredients){
                 if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
@@ -45,16 +39,13 @@ const searchIngredients = (recipes, query = null) => {
                 }
             }
         }
-        console.log({ 'filtered': filterRecipes })
         return filterRecipes
     } else {
-        console.log({ 'end': recipes })
         return recipes
     }
 }
 
 const searchDevices = (recipes, query = null) => {
-    console.log({ 'start': recipes })
     if (query === null) {
         return recipes
     }
@@ -65,16 +56,13 @@ const searchDevices = (recipes, query = null) => {
                 filterRecipes.push(recipe)
             }
         }
-        console.log({ 'filtered': filterRecipes })
         return filterRecipes
     } else {
-        console.log({ 'end': recipes })
         return recipes
     }
 }
 
 const searchUstensils = (recipes, query = null) => {
-    console.log({ 'start': recipes })
     if (query === null) {
         return recipes
     }
@@ -87,10 +75,8 @@ const searchUstensils = (recipes, query = null) => {
                 }
             }
         }
-        console.log({ 'filtered': filterRecipes })
         return filterRecipes
     } else {
-        console.log({ 'end': recipes })
         return recipes
     }
 }
