@@ -69,7 +69,6 @@ const app = {
 
     getIgredients: async function (recipes, query) {
         let ingredients = [];
-
         if (query === null) {
             for (let recipe of recipes) {
                 recipe.ingredients.forEach(ingredient => {
@@ -91,22 +90,50 @@ const app = {
         }
     },
 
-    getDevices: async function (recipes) {
+    getDevices: async function (recipes, query) {
         let devices = [];
-        recipes.forEach(recipe => {
+        if (query === null) {
+            for (let recipe of recipes) {
+                devices.push(recipe.appliance)
+            };
+            app.devices = new Set(devices)
+        } else {
+            if (query.length > 2) {
+                for (let recipe of recipes) {
+                    if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
+                        devices.push(recipe.appliance)
+                    }
+                };
+                app.devices = new Set(devices)
+            }
+        }
+        for (let recipe of recipes) {
             devices.push(recipe.appliance)
-        });
+        };
         app.devices = new Set(devices)
     },
 
-    getUstensils: async function (recipes) {
+    getUstensils: async function (recipes, query) {
         let ustensils = [];
-        recipes.forEach(recipe => {
-            recipe.ustensils.forEach(ustensil => {
-                ustensils.push(ustensil)
-            })
-        });
-        app.ustensils = new Set(ustensils)
+        if (query === null) {
+            for (let recipe of recipes) {
+                recipe.ustensils.forEach(ustensil => {
+                    ustensils.push(ustensil)
+                })
+            };
+            app.ustensils = new Set(ustensils)
+        } else {
+            if (query.length > 2) {
+                for (let recipe of recipes) {
+                    for (let ustensil of recipe.ustensils) {
+                        if (ustensil.toLowerCase().includes(query.toLowerCase())) {
+                            ustensils.push(ustensil)
+                        }
+                    }
+                };
+                app.ustensils = new Set(ustensils)
+            }
+        }
     },
 
     displayIngredients: async function (recipes, query = null) {
@@ -129,8 +156,8 @@ const app = {
         }
     },
 
-    displayDevices: async function (recipes) {
-        app.getDevices(recipes)
+    displayDevices: async function (recipes, query = null) {
+        app.getDevices(recipes, query)
         const devicesContainer = document.querySelector(".results-devices");
         devicesContainer.innerHTML = "";
         const devicesList = document.createElement("ul");
@@ -148,8 +175,8 @@ const app = {
         }
     },
 
-    displayUstensils: async function (recipes) {
-        app.getUstensils(recipes)
+    displayUstensils: async function (recipes, query = null) {
+        app.getUstensils(recipes, query)
         const ustensilsContainer = document.querySelector(".results-kitchenware");
         ustensilsContainer.innerHTML = "";
         const ustensilsList = document.createElement("ul");
@@ -300,16 +327,19 @@ const app = {
             })
         } else {
             if (query.length > 2) {
-                const filteredRecipes = searchUstensils(recipes, query);
+                let filteredRecipes = []
+                if (app.filteredRecipes.length > 0) {
+                    filteredRecipes = searchUstensils(recipes, query);
+                } else {
+                    filteredRecipes = searchUstensils(app.recipes, query);
+                }
                 app.filteredRecipes = [...filteredRecipes];
                 recipesContainer.innerHTML = "";
                 app.displayRecipes(filteredRecipes)
                 app.displayUstensils(filteredRecipes, query)
-            }
-            else {
+            } else {
                 recipesContainer.innerHTML = "";
-                app.displayRecipes(recipes)
-                app.displayUstensils(recipes)
+                app.displayRecipes(app.recipes)
             }
         }
     }
