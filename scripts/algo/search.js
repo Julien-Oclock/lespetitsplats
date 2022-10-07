@@ -1,4 +1,8 @@
 const searchRecipes = (recipes, query = null) => {
+
+    if (query === null) {
+        return recipes
+    }
     let result = [];
     if (query.length > 2) {
         for (let i = 0; i < recipes.length; i++) {
@@ -21,7 +25,7 @@ const searchRecipes = (recipes, query = null) => {
     } else {
         return recipes;
     }
-    
+
 }
 
 
@@ -32,8 +36,8 @@ const searchIngredients = (recipes, query = null) => {
     }
     if (query.length > 2) {
         const filterRecipes = []
-        for (let recipe of recipes){
-            for (let ingredient of recipe.ingredients){
+        for (let recipe of recipes) {
+            for (let ingredient of recipe.ingredients) {
                 if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
                     filterRecipes.push(recipe)
                 }
@@ -51,9 +55,10 @@ const searchDevices = (recipes, query = null) => {
     }
     if (query.length > 2) {
         const filterRecipes = []
-        for (let recipe of recipes){
+        for (let recipe of recipes) {
             if (recipe.appliance.toLowerCase().includes(query.toLowerCase())) {
                 filterRecipes.push(recipe)
+                console.log(filterRecipes)
             }
         }
         return filterRecipes
@@ -68,8 +73,8 @@ const searchUstensils = (recipes, query = null) => {
     }
     if (query.length > 2) {
         const filterRecipes = []
-        for (let recipe of recipes){
-            for (let ustensil of recipe.ustensils){
+        for (let recipe of recipes) {
+            for (let ustensil of recipe.ustensils) {
                 if (ustensil.toLowerCase().includes(query.toLowerCase())) {
                     filterRecipes.push(recipe)
                 }

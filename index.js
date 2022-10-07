@@ -67,14 +67,28 @@ const app = {
         app.displayUstensils(recipes)
     },
 
-    getIgredients: async function (recipes) {
+    getIgredients: async function (recipes, query) {
         let ingredients = [];
-        recipes.forEach(recipe => {
-            recipe.ingredients.forEach(ingredient => {
-                ingredients.push(ingredient.ingredient)
-            })
-        });
-        app.ingredients = new Set(ingredients)
+
+        if (query === null) {
+            for (let recipe of recipes) {
+                recipe.ingredients.forEach(ingredient => {
+                    ingredients.push(ingredient.ingredient)
+                })
+            };
+            app.ingredients = new Set(ingredients)
+        } else {
+            if (query.length > 2) {
+                for (let recipe of recipes) {
+                    for (let ingredient of recipe.ingredients) {
+                        if (ingredient.ingredient.toLowerCase().includes(query.toLowerCase())) {
+                            ingredients.push(ingredient.ingredient)
+                        }
+                    }
+                };
+                app.ingredients = new Set(ingredients)
+            }
+        }
     },
 
     getDevices: async function (recipes) {
@@ -95,8 +109,8 @@ const app = {
         app.ustensils = new Set(ustensils)
     },
 
-    displayIngredients: async function (recipes) {
-        app.getIgredients(recipes)
+    displayIngredients: async function (recipes, query = null) {
+        app.getIgredients(recipes, query)
         const ingredientsContainer = document.querySelector(".results-ingredients");
         ingredientsContainer.innerHTML = "";
         const ingredientList = document.createElement("ul");
@@ -104,14 +118,13 @@ const app = {
         ingredientList.classList.add("blue");
         ingredientsContainer.appendChild(ingredientList);
         for (let ingredient of app.ingredients) {
-            
             const ingredientItem = document.createElement("li");
             ingredientItem.classList.add("results-ingredients-list-item");
             ingredientItem.classList.add("blue");
             ingredientItem.innerHTML = ingredient;
             ingredientList.appendChild(ingredientItem);
             ingredientItem.addEventListener('click', (e) => {
-                console.log(ingredient)
+                app.ingredientsSearch(e, ingredient)
             })
         }
     },
@@ -129,6 +142,9 @@ const app = {
             deviceItem.classList.add("results-devices-item");
             deviceItem.innerHTML = device;
             devicesList.appendChild(deviceItem);
+            deviceItem.addEventListener('click', (e) => {
+                app.deviceSearch(e, device)
+            })
         }
     },
 
@@ -145,6 +161,9 @@ const app = {
             ustensilItem.classList.add("results-kitchenware-item");
             ustensilItem.innerHTML = ustensil;
             ustensilsList.appendChild(ustensilItem);
+            ustensilItem.addEventListener('click', (e) => {
+                app.ustensilsSearch(e, ustensil)
+            })
         }
     },
 
@@ -158,10 +177,10 @@ const app = {
     },
 
     ingredientsSearch: async function (e, tag = null) {
-        const query = e.target.value.toLowerCase();
+        const query = e.target.value ? e.target.value.toLowerCase() : '';
         const recipesContainer = document.querySelector(".result");
         let recipes = [...app.recipes];
-        
+
 
         if (recipes.length !== app.filteredRecipes.length) {
             recipes = [...app.filteredRecipes];
@@ -170,22 +189,26 @@ const app = {
         }
         if (tag !== null) {
             const filteredRecipes = searchIngredients(recipes, tag);
-            app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
             app.displayRecipes(filteredRecipes)
             app.displayIngredients(filteredRecipes, tag)
-
             const htmlTag = document.createElement('div');
             htmlTag.className = 'search__tag-item blue';
             htmlTag.innerHTML = `${tag} <i class="fa-regular fa-circle-xmark close"></i>`;
             app.htmlTagContainer.appendChild(htmlTag);
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
-                console.log('close')
+                htmlTag.remove();
+                app.displayRecipes(recipes)
             })
         } else {
-            if (query.length > 2){
-                const filteredRecipes = searchIngredients(recipes, query);
+            if (query.length > 2) {
+                let filteredRecipes = []
+                if (app.filteredRecipes.length > 0) {
+                    filteredRecipes = searchIngredients(recipes, query);
+                } else {
+                    filteredRecipes = searchIngredients(app.recipes, query);
+                }
                 app.filteredRecipes = [...filteredRecipes];
                 recipesContainer.innerHTML = "";
                 app.displayRecipes(filteredRecipes)
@@ -194,14 +217,14 @@ const app = {
             else {
                 recipesContainer.innerHTML = "";
                 app.displayRecipes(app.recipes)
-                app.displayIngredients(app.recipes)
             }
 
         }
     },
 
-    deviceSearch : async function (e, tag = null) {
-        const query = e.target.value.toLowerCase();
+    deviceSearch: async function (e, tag = null) {
+        console.log('début de la recherche')
+        const query = e.target.value ? e.target.value.toLowerCase() : '';
         const recipesContainer = document.querySelector(".result");
         let recipes = [...app.recipes];
         if (recipes.length !== app.filteredRecipes.length) {
@@ -222,26 +245,36 @@ const app = {
             app.htmlTagContainer.appendChild(htmlTag);
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
-                console.log('close')
+                htmlTag.remove();
+                app.displayRecipes(recipes)
             })
         } else {
-            if (query.length > 2){
-                const filteredRecipes = searchDevices(recipes, query);
+            if (query.length > 2) {
+                console.log({ query: query })
+                console.log(recipes)
+                let filteredRecipes = []
+                if (app.filteredRecipes.length > 0) {
+                    filteredRecipes = searchDevices(recipes, query);
+                } else {
+                    filteredRecipes = searchDevices(app.recipes, query);
+                }
                 app.filteredRecipes = [...filteredRecipes];
+                console.log(filteredRecipes)
                 recipesContainer.innerHTML = "";
                 app.displayRecipes(filteredRecipes)
                 app.displayDevices(filteredRecipes, query)
             }
             else {
                 recipesContainer.innerHTML = "";
-                app.displayRecipes(app.recipes)
                 app.displayDevices(app.recipes)
+                app.displayRecipes(app.recipes)
+                app.filteredRecipes = [...app.recipes];
             }
         }
     },
 
-    ustensilsSearch : async function (e, tag = null) {
-        const query = e.target.value.toLowerCase();
+    ustensilsSearch: async function (e, tag = null) {
+        const query = e.target.value ? e.target.value.toLowerCase() : '';
         const recipesContainer = document.querySelector(".result");
         let recipes = [...app.recipes];
         if (recipes.length !== app.filteredRecipes.length) {
@@ -262,10 +295,11 @@ const app = {
             app.htmlTagContainer.appendChild(htmlTag);
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
-                console.log('close')
+                htmlTag.remove();
+                app.displayRecipes(recipes)
             })
         } else {
-            if (query.length > 2){
+            if (query.length > 2) {
                 const filteredRecipes = searchUstensils(recipes, query);
                 app.filteredRecipes = [...filteredRecipes];
                 recipesContainer.innerHTML = "";
@@ -274,8 +308,8 @@ const app = {
             }
             else {
                 recipesContainer.innerHTML = "";
-                app.displayRecipes(app.recipes)
-                app.displayUstensils(app.recipes)
+                app.displayRecipes(recipes)
+                app.displayUstensils(recipes)
             }
         }
     }
