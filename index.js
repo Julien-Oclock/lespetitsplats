@@ -152,6 +152,8 @@ const app = {
             ingredientList.appendChild(ingredientItem);
             ingredientItem.addEventListener('click', (e) => {
                 app.ingredientsSearch(e, ingredient)
+                const ingredientList = document.querySelector(".results-ingredients-list");
+                ingredientList.classList.add("hidden");
             })
         }
     },
@@ -171,6 +173,8 @@ const app = {
             devicesList.appendChild(deviceItem);
             deviceItem.addEventListener('click', (e) => {
                 app.deviceSearch(e, device)
+                const devicesList = document.querySelector(".results-devices-list");
+                devicesList.classList.add("hidden");
             })
         }
     },
@@ -190,6 +194,8 @@ const app = {
             ustensilsList.appendChild(ustensilItem);
             ustensilItem.addEventListener('click', (e) => {
                 app.ustensilsSearch(e, ustensil)
+                const ustensilsList = document.querySelector(".results-kitchenware-list");
+                ustensilsList.classList.add("hidden");
             })
         }
     },
@@ -227,6 +233,8 @@ const app = {
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
                 app.displayRecipes(recipes)
+                const ingredientList = document.querySelector(".results-ingredients-list");
+                ingredientList.classList.add("hidden");
             })
         } else {
             if (query.length > 2) {
@@ -274,6 +282,9 @@ const app = {
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
                 app.displayRecipes(recipes)
+                const devicesList = document.querySelector(".results-devices-list");
+                devicesList.classList.add("hidden");
+
             })
         } else {
             if (query.length > 2) {
@@ -324,6 +335,8 @@ const app = {
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
                 app.displayRecipes(recipes)
+                const ustensilsList = document.querySelector(".results-kitchenware-list");
+                ustensilsList.classList.add("hidden");
             })
         } else {
             if (query.length > 2) {
