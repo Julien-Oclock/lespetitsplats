@@ -59,7 +59,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: fit-content;
+    height: 300px;
     margin-bottom: 30px;
 
     &__recipes {
@@ -210,37 +210,32 @@ body {
     .results-ingredients-list,
     .results-devices-list,
     .results-kitchenware-list {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 30px;
-        width: fit-content;
-        min-width: 300px;
-        border-radius: 0 0 5px 5px;
         margin-top: -5px;
-        padding-bottom: 10px;
+        padding: 15px;
+        display: grid;
+        grid-template-columns : 30% 30% 30%;
+        row-gap: 10px;
+        column-gap: 10px;
+        border-radius: 0px 0px 10px 10px;
+
 
 
         li {
-            width: 30%;
-            min-width: fit-content;
-            height: 40px;
-            line-height: 40px;
-            padding: 0 15px;
+                 
+            height: 35px;
         }
     }
 }
 
 .result {
-    width: 90vw;
     margin: auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 0 0;
+    display: grid;
+    grid-template-columns : 30% 30% 30%;
+    column-gap: 90px;
+    margin: 0 auto;
 }
 
 .recipes {
-    width: 28%;
     height: 364px;
 
     margin-bottom: 100px;
@@ -279,6 +274,7 @@ body {
     &__content-ingredients {
         width: 40%;
         font-family: "Lato";
+        min-height: 100px;
     }
 
     &__content-instructions {

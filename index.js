@@ -17,6 +17,8 @@ const app = {
         app.ingredientsSearchInput.addEventListener('input', app.searchIngredients);
         app.devicesSearchInput.addEventListener('input', app.searchDevices);
         app.ustensilsSearchInput.addEventListener('input', app.searchUstensils);
+
+        
     },
 
     recipes: [],
@@ -29,6 +31,7 @@ const app = {
     devicesSearchInput: document.querySelector(".devices"),
     ustensilsSearchInput: document.querySelector(".kitchenware"),
     htmlTagContainer: document.querySelector('.search__tag'),
+    body : document.querySelector('body'),
 
 
 
@@ -155,6 +158,9 @@ const app = {
             ingredientList.appendChild(ingredientItem);
             ingredientItem.addEventListener('click', (e) => {
                 app.searchIngredients(e, ingredient)
+                //close ingredient list
+                const ingredientList = document.querySelector(".results-ingredients-list");
+                ingredientList.classList.add("hidden");
             })
         })
     },
@@ -174,6 +180,8 @@ const app = {
             devicesList.appendChild(deviceItem);
             deviceItem.addEventListener('click', (e) => {
                 app.searchDevices(e, device)
+                const deviceList = document.querySelector(".results-devices-list");
+                deviceList.classList.add("hidden");
             })
         })
     },
@@ -193,6 +201,8 @@ const app = {
             ustensilsList.appendChild(ustensilItem);
             ustensilItem.addEventListener('click', (e) => {
                 app.searchUstensils(e, ustensil)
+                const ustensilList = document.querySelector(".results-kitchenware-list");
+                ustensilList.classList.add("hidden");
             })
         })
     },
