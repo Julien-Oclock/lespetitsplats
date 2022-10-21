@@ -1,5 +1,4 @@
 const searchRecipes = (recipes, query = null) => {
-
     if (query === null) {
         return recipes
     }
