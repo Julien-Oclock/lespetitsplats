@@ -18,11 +18,11 @@ const app = {
         app.devicesSearchInput.addEventListener('input', app.searchDevices);
         app.ustensilsSearchInput.addEventListener('input', app.searchUstensils);
 
-        
+
     },
 
     recipes: [],
-    filteredRecipes : [],
+    filteredRecipes: [],
     ingredients: [],
     devices: [],
     ustensils: [],
@@ -31,7 +31,7 @@ const app = {
     devicesSearchInput: document.querySelector(".devices"),
     ustensilsSearchInput: document.querySelector(".kitchenware"),
     htmlTagContainer: document.querySelector('.search__tag'),
-    body : document.querySelector('body'),
+    body: document.querySelector('body'),
 
 
 
@@ -118,6 +118,7 @@ const app = {
     },
 
     getUstensils: async function (recipes, query) {
+        console.log(recipes)
         let ustensils = [];
         if (query === null) {
             recipes.forEach(recipe => {
@@ -266,7 +267,7 @@ const app = {
         }
 
         if (tag !== null) {
-            app.displayDevices(tag);
+            app.displayDevices(recipes, tag);
             const filteredRecipes = searchDevices(recipes, tag);
             app.filteredRecipes = [...filteredRecipes];
             recipesContainer.innerHTML = "";
@@ -315,7 +316,7 @@ const app = {
             const closeTag = htmlTag.querySelector('.close');
             closeTag.addEventListener('click', () => {
                 htmlTag.remove();
-                app.displayUstensils()
+                app.displayUstensils(recipes)
                 app.displayRecipes(recipes)
             })
 
